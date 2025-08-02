@@ -57,7 +57,7 @@ exports.update = async (req, res) => {
       type: "ProductUpdated",
       data: {
         id: req.params.id,
-        data : req.body
+        data: req.body,
       },
     });
     res.json({ message: "Produk diperbarui" });
@@ -75,6 +75,12 @@ exports.remove = async (req, res) => {
     if (deleted === 0)
       return res.status(404).json({ error: "Produk tidak ditemukan" });
 
+    await axios.post("http://localhost:4005/events", {
+      type: "ProductDeleted",
+      data: {
+        id: req.params.id,
+      },
+    });
     res.json({ message: "Produk dihapus" });
   } catch (err) {
     res.status(500).json({ error: err.message });

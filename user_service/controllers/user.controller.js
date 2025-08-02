@@ -71,6 +71,12 @@ exports.remove = async (req, res) => {
     if (deleted === 0)
       return res.status(404).json({ error: "User tidak ditemukan" });
 
+    await axios.post("http://localhost:4005/events", {
+      type: "UserDeleted",
+      data: {
+        id: req.params.id,
+      },
+    });
     res.json({ message: "User dihapus" });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -40,6 +40,20 @@ exports.event = async (req, res) => {
       console.log("User Updated", req.body.data);
     }
 
+    if (events.type === "UserDeleted") {
+      const deleted = await db.User.destroy({
+        where: { id: req.body.data.id },
+      });
+      console.log("User Deleted", req.body.data);
+    }
+
+    if (events.type === "ProductDeleted") {
+      const deleted = await db.Product.destroy({
+        where: { id: req.body.data.id },
+      });
+      console.log("Product Deleted", req.body.data);
+    }
+
     console.log("Event", events);
   } catch (err) {
     res.status(500).json({ error: err.message });
