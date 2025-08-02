@@ -1,5 +1,5 @@
 const db = require("../models");
-const axios = require('axios');
+const axios = require("axios");
 
 const Transaction = db.Transaction;
 
@@ -37,9 +37,9 @@ exports.create = async (req, res) => {
 
     // Panggil user_service & product_service
 
-    const user = await userService.getUserById(userId);
+    const user = await db.User.findByPk(userId);
 
-    const product = await productService.getProductById(productId);
+    const product = await db.Product.findByPk(productId);
 
     if (!user || !product) {
       return res.status(400).json({ error: "User atau Product tidak valid" });
@@ -58,8 +58,16 @@ exports.create = async (req, res) => {
     });
 
     const stock = product.stock - quantity;
+
+    const [updated] = await db.Product.update(
+      { stock: stock },
+      {
+        where: { id: productId },
+      }
+    );
+    
     await axios.post("http://localhost:4005/events", {
-      type: "TransactionCreated",
+      type: "ProductStockUpdate",
       data: { productId, stock },
     });
 

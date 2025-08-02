@@ -54,17 +54,6 @@ exports.event = async (req, res) => {
       console.log("Product Deleted", req.body.data);
     }
 
-    if (events.type === "TransactionCreated") {
-      const { productId, stock } = events.data;
-      const [updated] = await db.Product.update(
-        { stock: stock },
-        {
-          where: { id: productId },
-        }
-      );
-      console.log("Product Updated", events);
-    }
-
     console.log("Event", events);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -6,12 +6,15 @@ exports.event = async (req, res) => {
   try {
     const events = req.body;
 
-    if (events.type === "TransactionCreated") {
+    if (events.type === "ProductStockUpdate") {
       const { productId, stock } = events.data;
-      const [updated] = await Product.update({"stock" : stock}, {
-        where: { id: productId },
-      });
-      console.log("Product Updated", events);
+      const [updated] = await Product.update(
+        { stock: stock },
+        {
+          where: { id: productId },
+        }
+      );
+      console.log("Product Stock Updated", events);
     }
     // await axios.post("http://localhost:4005/events");
     console.log("Event", events);
