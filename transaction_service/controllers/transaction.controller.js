@@ -57,9 +57,10 @@ exports.create = async (req, res) => {
       totalPrice,
     });
 
+    const stock = product.stock - quantity;
     await axios.post("http://localhost:4005/events", {
       type: "TransactionCreated",
-      data: { userId, productId, quantity, totalPrice },
+      data: { productId, stock },
     });
 
     res.status(201).json(transaction);
