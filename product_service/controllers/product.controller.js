@@ -29,12 +29,14 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name,price,stock } = req.body;
+    const { id, name, price, stock } = req.body;
     const product = await Product.create(req.body);
     await axios.post("http://localhost:4005/events", {
       type: "ProductCreated",
-      data: { name,price,stock },
+      data: { id, name, price, stock },
     });
+
+    console.log(id);
 
     res.status(201).json(product);
   } catch (err) {
@@ -51,6 +53,13 @@ exports.update = async (req, res) => {
     if (updated === 0)
       return res.status(404).json({ error: "Produk tidak ditemukan" });
 
+    await axios.post("http://localhost:4005/events", {
+      type: "ProductUpdated",
+      data: {
+        id: req.params.id,
+        data : req.body
+      },
+    });
     res.json({ message: "Produk diperbarui" });
   } catch (err) {
     res.status(500).json({ error: err.message });

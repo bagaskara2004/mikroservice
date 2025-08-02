@@ -2,7 +2,7 @@ const db = require("../models");
 
 const User = db.User;
 
-const axios = require('axios');
+const axios = require("axios");
 
 exports.getAll = async (req, res) => {
   try {
@@ -28,12 +28,11 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    
-    const {id,name,email,password} = req.body;
+    const { id, name, email, password } = req.body;
     const user = await User.create(req.body);
-    await axios.post('http://localhost:4005/events',{
+    await axios.post("http://localhost:4005/events", {
       type: "UserCreated",
-      data: {id,name,email,password}
+      data: { id, name, email, password },
     });
     res.status(201).json(user);
   } catch (err) {
@@ -50,6 +49,13 @@ exports.update = async (req, res) => {
     if (updated === 0)
       return res.status(404).json({ error: "User tidak ditemukan" });
 
+    await axios.post("http://localhost:4005/events", {
+      type: "UserUpdated",
+      data: {
+        id: req.params.id,
+        data: req.body,
+      },
+    });
     res.json({ message: "User diperbarui" });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -16,13 +16,28 @@ exports.event = async (req, res) => {
     }
 
     if (events.type === "ProductCreated") {
-      const { name, price, stock } = events.data;
+      const { id, name, price, stock } = events.data;
       const product = await db.Product.create({
+        id,
         name,
         price,
         stock,
       });
       console.log("Product Created", product.toJSON());
+    }
+
+    if (events.type === "ProductUpdated") {
+      const product = await db.Product.update(req.body.data.data, {
+        where: { id: req.body.data.id },
+      });
+      console.log("Product Updated", req.body.data);
+    }
+
+    if (events.type === "UserUpdated") {
+      const user = await db.User.update(req.body.data.data, {
+        where: { id: req.body.data.id },
+      });
+      console.log("User Updated", req.body.data);
     }
 
     console.log("Event", events);
